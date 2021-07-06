@@ -45,6 +45,8 @@ protected:
 	void Move(const TArray<FVector>& Positions);
 	void AStarMoveTowardsLocation(const FVector& DestLocation);
 
+	AAStarPathfindingNode* GetLowestCostNode(const TArray<AAStarPathfindingNode*>& List) const;
+
 	float GetKnownCost(AAStarPathfindingNode* Previous, AAStarPathfindingNode* Current);
 	float GetHeuristicCost(AAStarPathfindingNode* Current, AAStarPathfindingNode* Goal);
 

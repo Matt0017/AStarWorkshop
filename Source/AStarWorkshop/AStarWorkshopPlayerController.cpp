@@ -141,26 +141,14 @@ void AAStarWorkshopPlayerController::AStarMoveTowardsLocation(const FVector& Des
 
 	while (OpenList.Num() > 0)
 	{
-		// a) find the node with the least total cost on the open list
-		AAStarPathfindingNode* Current = OpenList[0];
-		float Cost = OpenList[0]->TotalCost();
-		for (auto* Node : OpenList)
-		{
-			if (Node->TotalCost() < Cost)
-			{
-				Cost = Node->TotalCost();
-				Current = Node;
-			}
-		}
+		AAStarPathfindingNode* Current = GetLowestCostNode(OpenList);
 		OpenList.Remove(Current);
 		
-		// b) Have we reached the solution ?
 		if (Current == Goal)
 		{
 			break;
 		}
 
-		// c) Lets look at its neighbours
 		for (auto* Neighbour : Current->Neighbours)
 		{
 			if (CloseList.Contains(Neighbour))
@@ -169,7 +157,6 @@ void AAStarWorkshopPlayerController::AStarMoveTowardsLocation(const FVector& Des
 			}
 			else if (OpenList.Contains(Neighbour))
 			{
-				// Lets make sure it has the best path for later
 				float KnownCostThisWay = GetKnownCost(Current, Neighbour);
 				if (KnownCostThisWay < Neighbour->KnownCost)
 				{
@@ -190,6 +177,21 @@ void AAStarWorkshopPlayerController::AStarMoveTowardsLocation(const FVector& Des
 	}
 
 	Move(GenerateSolution(Start, Goal));
+}
+
+AAStarPathfindingNode* AAStarWorkshopPlayerController::GetLowestCostNode(const TArray<AAStarPathfindingNode*>& List) const
+{
+	AAStarPathfindingNode* Out = List[0];
+	float Cost = List[0]->TotalCost();
+	for (auto* Node : List)
+	{
+		if (Node->TotalCost() < Cost)
+		{
+			Cost = Node->TotalCost();
+			Out = Node;
+		}
+	}
+	return Out;
 }
 
 TArray<FVector> AAStarWorkshopPlayerController::GenerateSolution(AAStarPathfindingNode* Start, AAStarPathfindingNode* Goal)
