@@ -138,42 +138,11 @@ void AAStarWorkshopPlayerController::AStarMoveTowardsLocation(const FVector& Des
 	TArray<AAStarPathfindingNode*> CloseList;
 
 	OpenList.Add(Start);
-
+	return;
+	
 	while (OpenList.Num() > 0)
 	{
-		AAStarPathfindingNode* Current = GetLowestCostNode(OpenList);
-		OpenList.Remove(Current);
-		
-		if (Current == Goal)
-		{
-			break;
-		}
-
-		for (auto* Neighbour : Current->Neighbours)
-		{
-			if (CloseList.Contains(Neighbour))
-			{
-				continue;
-			}
-			else if (OpenList.Contains(Neighbour))
-			{
-				float KnownCostThisWay = GetKnownCost(Current, Neighbour);
-				if (KnownCostThisWay < Neighbour->KnownCost)
-				{
-					Neighbour->KnownCost = KnownCostThisWay;
-					Neighbour->PreviousNode = Current;
-				}
-			}
-			else
-			{
-				Neighbour->KnownCost = GetKnownCost(Current, Neighbour);
-				Neighbour->HeuristicCost = GetHeuristicCost(Neighbour, Goal);
-				Neighbour->PreviousNode = Current;
-				OpenList.Add(Neighbour);
-			}
-		}
-
-		CloseList.Add(Current);
+		//TODO Implement main algorithm
 	}
 
 	Move(GenerateSolution(Start, Goal));
@@ -182,41 +151,29 @@ void AAStarWorkshopPlayerController::AStarMoveTowardsLocation(const FVector& Des
 AAStarPathfindingNode* AAStarWorkshopPlayerController::GetLowestCostNode(const TArray<AAStarPathfindingNode*>& List) const
 {
 	AAStarPathfindingNode* Out = List[0];
-	float Cost = List[0]->TotalCost();
-	for (auto* Node : List)
-	{
-		if (Node->TotalCost() < Cost)
-		{
-			Cost = Node->TotalCost();
-			Out = Node;
-		}
-	}
+	
+	// TODO Implement Get Lowest Node
+
 	return Out;
 }
 
 TArray<FVector> AAStarWorkshopPlayerController::GenerateSolution(AAStarPathfindingNode* Start, AAStarPathfindingNode* Goal)
 {
 	TArray<FVector> Positions;
-	AAStarPathfindingNode* Current = Goal;
 
-	while (Current != Start)
-	{
-		Positions.Add(Current->GetActorLocation());
-		Current = Current->PreviousNode;
-	}
+	// TODO Implement Get Solution using the Goal and Start nodes.
 
-	Algo::Reverse(Positions);
 	return Positions;
 }
 
 float AAStarWorkshopPlayerController::GetKnownCost(AAStarPathfindingNode* Previous, AAStarPathfindingNode* Current)
 {
-	return Current->KnownCost + FVector::DistSquared(Previous->GetActorLocation(), Current->GetActorLocation()) * Current->Weight;
+	return 0; // TODO Implement Kown Cost
 }
 
 float AAStarWorkshopPlayerController::GetHeuristicCost(AAStarPathfindingNode* Current, AAStarPathfindingNode* Goal)
 {
-	return FVector::DistSquared(Current->GetActorLocation(), Goal->GetActorLocation());
+	return 0; // TODO Implement Heuristic Cost
 }
 
 AAStarPathfindingNode* AAStarWorkshopPlayerController::GetNodeFromLocation(const FVector& DestLocation) const
